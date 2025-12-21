@@ -19,7 +19,9 @@ npm install --save-dev \
   @types/node \
   @types/express \
   @types/bcrypt \
-  @types/jsonwebtoken
+  @types/jsonwebtoken \
+  @types/pg
+
 ```
 
 `npm install -D tsx`
