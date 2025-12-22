@@ -18,7 +18,7 @@ export const register = async (req: Request, res: Response) => {
       [username, email, hashedPassword]
     );
     const user = result.rows[0];
-    res.status(201).json({ message: "User Registered Successfuly", user });
+    res.status(201).json({ user });
   } catch (error) {
     res.status(500).json({ error: "Failed To Registered USer" });
   }
@@ -35,6 +35,7 @@ export const login = async (req: Request, res: Response): Promise<any> => {
       email,
     ]);
     const user = result.rows[0];
+
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
@@ -42,8 +43,10 @@ export const login = async (req: Request, res: Response): Promise<any> => {
     if (!isMatch) {
       return res.status(400).json({ error: "Invalid credentials." });
     }
+
     const token = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: "10h" });
-    res.status(201).json({ message: "Logged in Successfully", token });
+    let finalResult = { ...user, token };
+    res.status(201).json({ user: finalResult });
   } catch (error) {
     res.status(500).json({ error: "Failed To Log in" });
   }

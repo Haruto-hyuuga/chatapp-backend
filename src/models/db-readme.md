@@ -58,11 +58,13 @@ Prompt becomes: `chatapp_db=#`
 
 > Now everything you do affects only this database.
 
-### 5. Create your first table (users)
+### 5. Create your tables
 
-first do run these:
+first do run these (once per db):
 Enables cryptographic functions: `CREATE EXTENSION IF NOT EXISTS pgcrypto;`
 verify this func: `SELECT gen_random_uuid();`
+
+#### user table
 
 ```
 CREATE TABLE users (
@@ -74,6 +76,39 @@ CREATE TABLE users (
 
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+#### conversation table
+
+```
+CREATE TABLE conversations (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    participant_one UUID NOT NULL REFERENCES users(id),
+    participant_two UUID NOT NULL REFERENCES users(id),
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    CHECK (participant_one <> participant_two)
+);
+```
+
+#### message table
+
+```
+CREATE TABLE messages (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    conversation_id UUID NOT NULL
+        REFERENCES conversations(id) ON DELETE CASCADE,
+
+    sender_id UUID NOT NULL
+        REFERENCES users(id) ON DELETE CASCADE,
+
+    content TEXT NOT NULL,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 ```
 
