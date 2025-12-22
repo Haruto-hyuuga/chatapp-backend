@@ -116,15 +116,6 @@ CREATE TABLE messages (
 
 You should see: `users`
 
-### 6. Understand this table (important)
-
-Column Meaning:
-
-id Auto number
-username User name
-email Must be unique
-created_at Auto timestamp
-
 > PostgreSQL enforces rules, not your code.
 
 ### 7. Insert data

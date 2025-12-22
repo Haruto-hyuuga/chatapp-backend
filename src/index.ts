@@ -15,6 +15,14 @@ const io = new Server(server, {
   },
 });
 
+app.get("/", (_req, res) => {
+  res.json({
+    status: "ok",
+    message: "ChatApp Backend is live: By Lord_DSP_3",
+    uptime: process.uptime(),
+  });
+});
+
 app.use("/auth", authRoutes);
 app.use("/conversation", conversationRoutes);
 app.use("/messages", messagesRoutes);
