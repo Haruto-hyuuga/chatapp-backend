@@ -4,12 +4,14 @@ backend for chatapp, written in nodejs using typescript.
 
 ### NPM pakages:
 
-`npm install express bcrypt jsonwebtoken pg`
+`npm install express bcrypt jsonwebtoken pg socket.io
+`
 
 - express → HTTP server framework
 - bcrypt → password hashing
 - jsonwebtoken → JWT auth
 - pg → PostgreSQL client
+- socket.io → live two-way connection
 
 ### Typescript
 
@@ -40,28 +42,4 @@ npm install --save-dev \
     "build": "tsc",
     "start": "node dist/index.js"
   },
-```
-
-## this whole code in tsconfig.json
-
-```
-{
-  "compilerOptions": {
-    "target": "ES2020",
-    "module": "commonjs",
-    "rootDir": "./src",
-    "outDir": "./dist",
-
-    "strict": true,
-    "esModuleInterop": true,
-    "moduleResolution": "node",
-
-    "types": ["node"],
-    "skipLibCheck": true,
-
-    "sourceMap": true
-  },
-  "include": ["src/**/*.ts"],
-  "exclude": ["node_modules"]
-}
 ```
