@@ -20,7 +20,8 @@ export const verifyToken = (
     );
     req.user = decoded as { id: string };
     next();
-  } catch (e) {
+  } catch (err) {
     res.status(500).json({ error: "Invalid token." });
+    console.error("❗ Authmiddleware.verifyToken: ", err);
   }
 };

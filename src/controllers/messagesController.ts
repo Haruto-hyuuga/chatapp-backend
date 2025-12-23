@@ -23,6 +23,10 @@ export const fetchAllMessagesByConversationId = async (
     res.status(500).json({
       error: "MessagController: Failed to fetch messages in conversations.",
     });
+    console.error(
+      "❗ MessagController.fetchAllMessagesByConversationId: ",
+      err
+    );
   }
 };
 
@@ -43,7 +47,10 @@ export const saveMessage = async (
 
     return result.rows[0];
   } catch (err) {
-    console.error("Error saving message: ", err);
+    console.error(
+      "❗ MessagController.saveMessage:  Error saving message: ",
+      err
+    );
     throw new Error("MessagController: Failed to insert messages.");
   }
 };

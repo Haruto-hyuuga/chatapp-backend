@@ -10,6 +10,9 @@ export const register = async (req: Request, res: Response) => {
   // get username, email, password from appendFile
   // add em to our Database
   // return message, user
+  if (!req.body) {
+    return res.status(400).json({ error: "Request body missing" });
+  }
   const { username, email, password } = req.body;
   try {
     const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
@@ -19,8 +22,9 @@ export const register = async (req: Request, res: Response) => {
     );
     const user = result.rows[0];
     res.status(201).json({ user });
-  } catch (error) {
+  } catch (err) {
     res.status(500).json({ error: "Failed To Registered USer" });
+    console.error("❗ authController.register: ", err);
   }
 };
 
@@ -47,7 +51,8 @@ export const login = async (req: Request, res: Response): Promise<any> => {
     const token = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: "10h" });
     let finalResult = { ...user, token };
     res.status(201).json({ user: finalResult });
-  } catch (error) {
+  } catch (err) {
     res.status(500).json({ error: "Failed To Log in" });
+    console.error("❗ authController.login: ", err);
   }
 };
