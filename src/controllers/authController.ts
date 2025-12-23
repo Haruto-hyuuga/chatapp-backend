@@ -21,13 +21,37 @@ export const register = async (req: Request, res: Response) => {
       [username, email, hashedPassword]
     );
     const user = result.rows[0];
-    res.status(201).json({ user });
+    res.status(201).json({ message: "Account Created." });
   } catch (err) {
     res.status(500).json({ error: "Failed To Registered USer" });
     console.error("❗ authController.register: ", err);
   }
 };
-
+/*
+}
+❗ authController.register:  error: duplicate key value violates unique constraint "users_email_key"
+    at /app/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async register (/app/dist/controllers/authController.js:22:24) {
+  length: 199,
+  severity: 'ERROR',
+  code: '23505',
+  detail: 'Key (email)=(z@gmail) already exists.',
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: 'public',
+  table: 'users',
+  column: undefined,
+  dataType: undefined,
+  constraint: 'users_email_key',
+  file: 'nbtinsert.c',
+  line: '666',
+  routine: '_bt_check_unique'
+}
+  */
 export const login = async (req: Request, res: Response): Promise<any> => {
   // get email, password from appendFile
   // Verify it exist in our Database

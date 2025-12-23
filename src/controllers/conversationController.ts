@@ -52,6 +52,20 @@ export const checkOrCreateConversation = async (
     userId = req.user.id;
   }
   const { contactId } = req.body;
+  if (!userId) {
+    return res.status(401).json({ error: "Unauthorized: No user id" });
+  }
+
+  if (!contactId) {
+    return res.status(400).json({ error: "contactId is required" });
+  }
+
+  if (userId === contactId) {
+    return res
+      .status(400)
+      .json({ error: "Cannot create conversation with yourself" });
+  }
+
   try {
     const existingConversation = await pool.query(
       `
@@ -78,7 +92,7 @@ export const checkOrCreateConversation = async (
     );
     return res.json({ conversationId: newConversation.rows[0].id });
   } catch (err) {
-    console.error("❗ conversationController.chechOrCreateConversation: ", err);
+    console.error("❗ conversationController.checkOrCreateConversation: ", err);
     res.status(500).json({
       error: "Failed to check or create conversation between two users",
     });

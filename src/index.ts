@@ -39,9 +39,15 @@ io.on("connection", (socket) => {
   });
 
   socket.on("sendMessage", async (message) => {
+    console.log("📩 sendMessage received:", message);
     const { conversationId, senderId, content } = message;
+    if (!conversationId || !senderId || !content) {
+      console.log("❌ Invalid message payload");
+      return;
+    }
     try {
       const savedMessage = await saveMessage(conversationId, senderId, content);
+      console.log("✅ Message saved:", savedMessage);
       io.to(conversationId).emit("newMessage", savedMessage);
       io.emit("conversationUpdated", {
         conversationId,
