@@ -6,6 +6,7 @@ import conversationRoutes from "./routes/conversationRoutes";
 import messagesRoutes from "./routes/messagesRoutes";
 import contactRoutes from "./routes/contactRoutes";
 import { saveMessage } from "./controllers/messagesController";
+import { log, error } from "./utils/logger";
 
 const app = express();
 const server = http.createServer(app);
@@ -33,13 +34,14 @@ app.use("/messages", messagesRoutes);
 app.use("/contacts", contactRoutes);
 
 io.on("connection", (socket) => {
-  console.log("socket: A user connected:", socket.id);
+  log("socket: A user connected:", socket.id);
+
   socket.on("joinConversation", (conversationId) => {
     socket.join(conversationId);
   });
 
   socket.on("sendMessage", async (message) => {
-    console.log("📩 sendMessage received:", message);
+    log("📩 sendMessage received:", message);
     const { conversationId, senderId, content } = message;
     if (!conversationId || !senderId || !content) {
       console.log("❌ Invalid message payload");
@@ -47,7 +49,7 @@ io.on("connection", (socket) => {
     }
     try {
       const savedMessage = await saveMessage(conversationId, senderId, content);
-      console.log("✅ Message saved:", savedMessage);
+      log("✅ Message saved:", savedMessage);
       io.to(conversationId).emit("newMessage", savedMessage);
       io.emit("conversationUpdated", {
         conversationId,
@@ -55,11 +57,11 @@ io.on("connection", (socket) => {
         lastMessageTime: savedMessage.created_at,
       });
     } catch (err) {
-      console.error("soket.on.sendmessage: Failed to save message in db", err);
+      error("soket.on.sendmessage: Failed to save message in db", err);
     }
   });
   socket.on("disconnect", () => {
-    console.log("socket: user disconnected: " + socket.id);
+    log("socket: user disconnected: " + socket.id);
   });
 });
 
