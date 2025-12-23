@@ -29,8 +29,6 @@ tables and stuff are created in local and copied to render (best way to do acc t
 
 ❯ `sudo -iu postgres`
 
-❯ `\c chatapp_db`
-
 write schema in file named schema.sql you can check file is by cmd ls
 
 ```
