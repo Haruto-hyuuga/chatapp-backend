@@ -38,7 +38,49 @@ ORDER BY m.created_at DESC NULLS LAST;
     );
     res.json(result.rows);
   } catch (err) {
-    res.status(500).json({ error: "Failed to fetch messages: " });
     console.error("❗ conversationController.fetchall: ", err);
+    res.status(500).json({ error: "Failed to fetch messages: " });
+  }
+};
+
+export const checkOrCreateConversation = async (
+  req: Request,
+  res: Response
+): Promise<any> => {
+  let userId = null;
+  if (req.user) {
+    userId = req.user.id;
+  }
+  const { contactId } = req.body;
+  try {
+    const existingConversation = await pool.query(
+      `
+      SELECT id FROM conversations
+      WHERE (participant_one = $1 AND participant_two = $2)
+      OR (participant_one = $2 AND participant_two = $1)
+      LIMIT 1;`,
+      [userId, contactId]
+    );
+
+    if (
+      existingConversation.rowCount != null &&
+      existingConversation.rowCount! > 0
+    ) {
+      return res.json({ conversationId: existingConversation.rows[0].id });
+    }
+
+    const newConversation = await pool.query(
+      `
+      INSERT INTO conversations (participant_one, participant_two)
+      VALUES ($1,$2)
+      RETURNING id;`,
+      [userId, contactId]
+    );
+    return res.json({ conversationId: newConversation.rows[0].id });
+  } catch (err) {
+    console.error("❗ conversationController.chechOrCreateConversation: ", err);
+    res.status(500).json({
+      error: "Failed to check or create conversation between two users",
+    });
   }
 };

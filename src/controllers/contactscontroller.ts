@@ -32,30 +32,58 @@ export const addContacts = async (
   req: Request,
   res: Response
 ): Promise<any> => {
-  let userId = null;
-  if (req.user) {
-    userId = req.user.id;
+  if (!req.user) {
+    return res.status(401).json({ error: "Unauthorized" });
   }
+  const userId = req.user.id;
   const { contactEmail } = req.body;
+
   try {
-    const contactExists = await pool.query(
-      `SELECT id FROM users WHERE email = $1;`,
+    const contactResult = await pool.query(
+      `SELECT id FROM users WHERE email = $1`,
       [contactEmail]
     );
-    if (contactExists.rowCount === 0) {
-      return res.status(404).json({ error: "Contact Not Found" });
+
+    if (contactResult.rowCount === 0) {
+      return res.status(404).json({ error: "Contact not found" });
     }
 
-    const contactId = contactExists.rows[0].id;
-    await pool.query(
-      `INSERT INTO contacts (user_id, contact_id)
-        VALUES ($1,$2)
-        ON CONFLICT DO NOTHING`,
+    const contactId = contactResult.rows[0].id;
+
+    if (contactId === userId) {
+      return res.status(400).json({
+        error: "You cannot add yourself as a contact",
+      });
+    }
+
+    const insertResult = await pool.query(
+      `
+      INSERT INTO contacts (user_id, contact_id)
+      VALUES ($1, $2)
+      ON CONFLICT DO NOTHING
+      RETURNING id
+      `,
       [userId, contactId]
     );
-    return res.status(201).json({ message: "Contact Added Successfully." });
-  } catch (err) {
-    console.error("❗ contactController.addContacts: ", err);
-    res.status(500).json({ error: "Failed to add contacts: " });
+
+    if (insertResult.rowCount === 0) {
+      return res.status(409).json({
+        error: "Contact already exists",
+      });
+    }
+
+    return res.status(201).json({
+      message: "Contact added successfully",
+    });
+  } catch (err: any) {
+    console.error("❗ contactController.addContacts:", err);
+    if (err.code === "23514") {
+      return res.status(400).json({
+        error: "Invalid contact operation",
+      });
+    }
+    return res.status(500).json({
+      error: "Failed to add contact",
+    });
   }
 };

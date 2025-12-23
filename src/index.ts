@@ -22,6 +22,7 @@ app.get("/", (_req, res) => {
   res.json({
     status: "ok",
     message: "ChatApp Backend is live: By Lord_DSP_3",
+    version: "v.1.3.1",
     uptime: process.uptime(),
   });
 });

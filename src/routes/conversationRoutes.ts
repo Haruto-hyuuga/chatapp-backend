@@ -1,9 +1,13 @@
 import { Router } from "express";
 import { verifyToken } from "../middlewares/authMiddleware";
-import { fetchAllConversationByuserId } from "../controllers/conversationController";
+import {
+  checkOrCreateConversation,
+  fetchAllConversationByuserId,
+} from "../controllers/conversationController";
 
 const router = Router();
 
 router.get("/", verifyToken, fetchAllConversationByuserId);
+router.post("/check-or-create", verifyToken, checkOrCreateConversation);
 
 export default router;
