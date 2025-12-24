@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import pool from "../models/db";
 import jwt from "jsonwebtoken";
 import { log, warn, error } from "../utils/logger";
+import { getRandomDefaultPfp } from "../services/imgbb";
 
 const SALT_ROUNDS = 10;
 const JWT_SECRET = process.env.JWT_SECRET || "DSP-chatapp-secretkey";
@@ -29,13 +30,14 @@ export const register = async (req: Request, res: Response) => {
   try {
     log("Hashing password");
     const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+    const profileUrl = getRandomDefaultPfp();
 
     log("Inserting user into database", { email });
     const result = await pool.query(
-      `INSERT INTO users (username, email, password)
-       VALUES ($1, $2, $3)
-       RETURNING id, username, email`,
-      [username, email, hashedPassword]
+      `INSERT INTO users (username, email, password, profile_url)
+       VALUES ($1, $2, $3, $4)
+       RETURNING *`,
+      [username, email, hashedPassword, profileUrl]
     );
 
     log("✅ User registered successfully", {

@@ -79,6 +79,17 @@ CREATE TABLE users (
 );
 ```
 
+> if u want profile pictures
+
+```
+ALTER TABLE users
+ADD COLUMN profile_url TEXT NOT NULL
+DEFAULT 'https://your-cdn.com/avatars/default.png';
+
+ALTER TABLE users
+ADD COLUMN profile_updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
+```
+
 #### conversation table
 
 ```
