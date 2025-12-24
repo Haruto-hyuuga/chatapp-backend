@@ -134,3 +134,46 @@ export const addContacts = async (
     });
   }
 };
+
+export const recentContacts = async (
+  req: Request,
+  res: Response
+): Promise<any> => {
+  if (!req.user) {
+    warn("recentContacts unauthorized access");
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
+  const userId = req.user.id;
+  log("recentContacts called", { userId });
+
+  try {
+    const recentResult = await pool.query(
+      `
+      SELECT u.id AS contact_id, u.username, u.email, u.profile_url
+      FROM contacts c
+      JOIN users u ON u.id = c.contact_id
+      WHERE c.user_id = $1
+      ORDER BY c.created_at DESC
+      LIMIT 8
+      `,
+      [userId]
+    );
+
+    log("recentContacts success", {
+      userId,
+      count: recentResult.rowCount,
+    });
+
+    return res.status(201).json(recentResult.rows);
+  } catch (err: any) {
+    error("contactController.recentContacts failed", {
+      userId,
+      err,
+    });
+
+    return res.status(500).json({
+      error: "Failed to fetch recent contacts",
+    });
+  }
+};

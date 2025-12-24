@@ -23,7 +23,19 @@ Add:
 
 # Local schema Migration
 
-tables and stuff are created in local and copied to render (best way to do acc to me)
+## Method 1 :
+
+❯ `sudo -iu postgres`
+
+copy PSQL Command from render dashboard under connection menu below external url then paste the cmd as is your terminal should change to ur db name=>
+
+❯ `PGPASSWORD=... psql -h dpg-...... -U chatapp_postgres_ng37_user ....`
+
+> you are now connect make any changes as you would in regular psql
+
+## Method 2
+
+tables and stuff are created in local and copied to render
 
 ❯ `sudo systemctl start postgresql`
 
