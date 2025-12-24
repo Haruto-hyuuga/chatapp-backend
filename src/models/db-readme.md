@@ -84,10 +84,10 @@ CREATE TABLE users (
 ```
 ALTER TABLE users
 ADD COLUMN profile_url TEXT NOT NULL
-DEFAULT 'https://your-cdn.com/avatars/default.png';
+    DEFAULT 'https://your-cdn.com/avatars/default.png',
+ADD COLUMN profile_updated_at TIMESTAMP
+    DEFAULT CURRENT_TIMESTAMP;
 
-ALTER TABLE users
-ADD COLUMN profile_updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
 ```
 
 #### conversation table
