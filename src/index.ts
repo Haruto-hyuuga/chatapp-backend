@@ -5,6 +5,7 @@ import authRoutes from "./routes/authRoutes";
 import conversationRoutes from "./routes/conversationRoutes";
 import messagesRoutes from "./routes/messagesRoutes";
 import contactRoutes from "./routes/contactRoutes";
+import geminiRoutes from "./routes/geminiRoutes";
 import { saveMessage } from "./controllers/messagesController";
 import { log, error } from "./utils/logger";
 
@@ -32,6 +33,7 @@ app.use("/auth", authRoutes);
 app.use("/conversation", conversationRoutes);
 app.use("/messages", messagesRoutes);
 app.use("/contacts", contactRoutes);
+app.use("/gemini", geminiRoutes);
 
 io.on("connection", (socket) => {
   log("socket: A user connected:", socket.id);

@@ -90,6 +90,10 @@ ADD COLUMN profile_updated_at TIMESTAMP
 
 ```
 
+> IF you want gemini interaction service
+
+`ALTER TABLE users ADD COLUMN gemini_interaction_id TEXT;`
+
 #### conversation table
 
 ```
