@@ -207,3 +207,163 @@ Check: `SELECT \* FROM users;`
 Check: `SELECT \* FROM users;`
 
 ### — Exit PostgreSQL `\q`
+
+# more cmds
+
+## Switch Database
+
+```sql
+\c database_name
+```
+
+---
+
+## List All Tables
+
+```sql
+\dt
+```
+
+List tables in a specific schema:
+
+```sql
+\dt schema_name.*
+```
+
+---
+
+## Describe Table Structure
+
+Shows columns, types, nullability, defaults:
+
+```sql
+\d table_name
+```
+
+Detailed structure (indexes, constraints, storage):
+
+```sql
+\d+ table_name
+```
+
+---
+
+## View Table Data (Rows)
+
+View all rows:
+
+```sql
+SELECT * FROM table_name;
+```
+
+Limit rows:
+
+```sql
+SELECT * FROM table_name LIMIT 10;
+```
+
+---
+
+## List Table Columns Only
+
+```sql
+SELECT column_name
+FROM information_schema.columns
+WHERE table_name = 'table_name';
+```
+
+---
+
+## List Indexes
+
+```sql
+\di
+```
+
+Indexes of a specific table:
+
+```sql
+\di table_name*
+```
+
+---
+
+## List Constraints (PK, FK, UNIQUE)
+
+```sql
+\d table_name
+```
+
+Or via SQL:
+
+```sql
+SELECT conname, contype
+FROM pg_constraint
+WHERE conrelid = 'table_name'::regclass;
+```
+
+---
+
+## List Views
+
+```sql
+\dv
+```
+
+---
+
+## List Sequences
+
+```sql
+\ds
+```
+
+---
+
+## List Functions
+
+```sql
+\df
+```
+
+---
+
+## List Rules
+
+```sql
+\dr
+```
+
+Rules for a table:
+
+```sql
+SELECT rulename, definition
+FROM pg_rules
+WHERE tablename = 'table_name';
+```
+
+---
+
+## Show Table Size
+
+```sql
+\d+ table_name
+```
+
+Or:
+
+```sql
+SELECT pg_size_pretty(pg_total_relation_size('table_name'));
+```
+
+---
+
+---
+
+## Helpful Meta Commands
+
+```sql
+\?     -- all psql commands
+\h     -- SQL help
+\x     -- toggle expanded output
+```

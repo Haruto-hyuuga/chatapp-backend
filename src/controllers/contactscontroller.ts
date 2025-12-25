@@ -150,12 +150,23 @@ export const recentContacts = async (
   try {
     const recentResult = await pool.query(
       `
-      SELECT u.id AS contact_id, u.username, u.email, u.profile_url
-      FROM contacts c
-      JOIN users u ON u.id = c.contact_id
-      WHERE c.user_id = $1
-      ORDER BY c.created_at DESC
-      LIMIT 8
+SELECT
+  u.id AS contact_id,
+  u.username,
+  u.email,
+  u.profile_url,
+  conv.id AS conversation_id
+FROM contacts c
+JOIN users u
+  ON u.id = c.contact_id
+LEFT JOIN conversations conv
+  ON (
+       (conv.participant_one = c.user_id AND conv.participant_two = c.contact_id)
+    OR (conv.participant_one = c.contact_id AND conv.participant_two = c.user_id)
+  )
+WHERE c.user_id = $1
+ORDER BY c.created_at DESC
+LIMIT 8;
       `,
       [userId]
     );
