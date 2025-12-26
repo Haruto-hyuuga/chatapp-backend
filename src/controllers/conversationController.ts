@@ -50,7 +50,7 @@ ORDER BY m.created_at DESC NULLS LAST;
       count: result.rowCount,
     });
 
-    return res.json(result.rows);
+    return res.status(200).json(result.rows);
   } catch (err) {
     error("conversationController.fetchAllConversationByuserId failed", {
       userId,
@@ -82,19 +82,25 @@ export const checkOrCreateConversation = async (
 
   if (!userId) {
     warn("checkOrCreateConversation unauthorized: no userId");
-    return res.status(401).json({ error: "Unauthorized: No user id" });
+    return res.status(401).json({
+      error:
+        "UNAUTHORIZED_ACCESS\nBackend did not recieve a valid access token, try login again.",
+    });
   }
 
   if (!contactId) {
     warn("checkOrCreateConversation missing contactId", { userId });
-    return res.status(400).json({ error: "contactId is required" });
+    return res.status(400).json({
+      error:
+        "MISSING_FIELD\ncontactId is required, backend did not recieve contact id/email",
+    });
   }
 
   if (userId === contactId) {
     warn("checkOrCreateConversation self-conversation attempt", { userId });
-    return res
-      .status(400)
-      .json({ error: "Cannot create conversation with yourself" });
+    return res.status(402).json({
+      error: "SELF_ADD_ATTEMPT\nCannot create conversation with yourself",
+    });
   }
 
   try {
@@ -118,7 +124,7 @@ export const checkOrCreateConversation = async (
         conversationId: existingConversation.rows[0].id,
       });
 
-      return res.json({
+      return res.status(200).json({
         conversationId: existingConversation.rows[0].id,
       });
     }
@@ -141,7 +147,7 @@ export const checkOrCreateConversation = async (
       conversationId: newConversation.rows[0].id,
     });
 
-    return res.json({
+    return res.status(200).json({
       conversationId: newConversation.rows[0].id,
     });
   } catch (err) {

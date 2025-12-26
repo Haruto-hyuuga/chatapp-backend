@@ -26,7 +26,7 @@ export const fetchAllMessagesByConversationId = async (
       count: result.rowCount,
     });
 
-    return res.json(result.rows);
+    return res.status(200).json(result.rows);
   } catch (err) {
     error("messagesController.fetchAllMessagesByConversationId failed", {
       conversationId,

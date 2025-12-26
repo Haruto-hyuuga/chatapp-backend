@@ -35,7 +35,7 @@ export const fetchContacts = async (
       count: result.rowCount,
     });
 
-    return res.json(result.rows);
+    return res.status(200).json(result.rows);
   } catch (err) {
     error("contactController.fetchContacts failed", {
       userId,
@@ -54,7 +54,10 @@ export const addContacts = async (
 ): Promise<any> => {
   if (!req.user) {
     warn("addContacts unauthorized access");
-    return res.status(401).json({ error: "Unauthorized" });
+    return res.status(401).json({
+      error:
+        "UNAUTHORIZED ACCESS\nBackend did not recieve a valid access token, try login again.",
+    });
   }
 
   const userId = req.user.id;
@@ -74,7 +77,10 @@ export const addContacts = async (
         contactEmail,
       });
 
-      return res.status(404).json({ error: "Contact not found" });
+      return res.status(404).json({
+        error:
+          "CONTACT NOT FOUND\nuser you are trying to add has not registered.",
+      });
     }
 
     const contactId = contactResult.rows[0].id;
@@ -83,7 +89,7 @@ export const addContacts = async (
       warn("addContacts self-add attempt", { userId });
 
       return res.status(400).json({
-        error: "You cannot add yourself as a contact",
+        error: "SELF ADD ATTEMPT\n You cannot add yourself as a contact",
       });
     }
 
@@ -104,7 +110,7 @@ export const addContacts = async (
       });
 
       return res.status(409).json({
-        error: "Contact already exists",
+        error: "DUPLICATE ERROR\nContact already exists",
       });
     }
 
@@ -113,7 +119,7 @@ export const addContacts = async (
       contactId,
     });
 
-    return res.status(201).json({
+    return res.status(200).json({
       message: "Contact added successfully",
     });
   } catch (err: any) {
@@ -130,7 +136,7 @@ export const addContacts = async (
     }
 
     return res.status(500).json({
-      error: "Failed to add contact",
+      error: "UNEXPECTED ERROR ",
     });
   }
 };
@@ -141,7 +147,12 @@ export const recentContacts = async (
 ): Promise<any> => {
   if (!req.user) {
     warn("recentContacts unauthorized access");
-    return res.status(401).json({ error: "Unauthorized" });
+    return res
+      .status(401)
+      .json({
+        error:
+          "UNAUTHORIZED ACCESS\nBackend did not recieve a valid access token, try login again.",
+      });
   }
 
   const userId = req.user.id;
@@ -176,7 +187,7 @@ LIMIT 8;
       count: recentResult.rowCount,
     });
 
-    return res.status(201).json(recentResult.rows);
+    return res.status(200).json(recentResult.rows);
   } catch (err: any) {
     error("contactController.recentContacts failed", {
       userId,
