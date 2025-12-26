@@ -3,8 +3,7 @@ import { GoogleGenAI } from "@google/genai";
 import { log, error } from "../utils/logger";
 import pool from "../models/db";
 
-const GEMINI_API_KEY =
-  process.env.GEMINI_API_KEY ?? "AIzaSyBX1Azy2tJL98Uq4Un1NhVAAQ8X2TiotRc";
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY ?? "";
 const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
 
 export const handleGeminiChat = async (
@@ -46,7 +45,6 @@ export const handleGeminiChat = async (
     const textOutput = interaction.outputs?.find((o) => o.type === "text");
 
     res.status(200).json({
-      success: true,
       message: textOutput?.text ?? null,
     });
   } catch (err: any) {

@@ -13,18 +13,23 @@ export const register = async (req: Request, res: Response) => {
 
   if (!req.body) {
     warn("⚠️ Register failed: missing request body");
-    return res.status(400).json({ error: "Request body missing" });
+    return res.status(400).json({
+      error: "Request body missing\nBackend failed to fetch requet body.",
+    });
   }
 
   const { username, email, password } = req.body;
 
   if (!username || !email || !password) {
-    warn("⚠️ Register failed: missing fields", {
+    warn("⚠️ Register failed: Missing fields", {
       usernamePresent: !!username,
       emailPresent: !!email,
       passwordPresent: !!password,
     });
-    return res.status(400).json({ error: "All fields are required" });
+    return res.status(400).json({
+      error:
+        "All fields are required\nMissing fields username || email || password",
+    });
   }
 
   try {
@@ -44,7 +49,7 @@ export const register = async (req: Request, res: Response) => {
       userId: result.rows[0].id,
     });
 
-    return res.status(201).json({
+    return res.status(200).json({
       message: "Account Created.",
     });
   } catch (err: any) {
@@ -52,7 +57,8 @@ export const register = async (req: Request, res: Response) => {
     if (err.code === "23505") {
       warn("⚠️ Register failed: email already exists", { email });
       return res.status(409).json({
-        error: "Email already registered",
+        error:
+          "Email already registered for different account, try another email.",
       });
     }
 
@@ -70,7 +76,10 @@ export const login = async (req: Request, res: Response) => {
 
   if (!email || !password) {
     warn("⚠️ Login failed: missing credentials");
-    return res.status(400).json({ error: "Email and password required" });
+    return res.status(400).json({
+      error:
+        "Email and password required\nBackend Failed to fetch email and password.",
+    });
   }
 
   try {
@@ -83,7 +92,10 @@ export const login = async (req: Request, res: Response) => {
 
     if (!user) {
       warn("⚠️ Login failed: user not found", { email });
-      return res.status(404).json({ error: "User not found" });
+      return res.status(404).json({
+        error:
+          "USER_NOT_FOUND [DB]\nMake sure user has created account by registration page.",
+      });
     }
 
     log("Comparing passwords", { userId: user.id });
@@ -91,7 +103,10 @@ export const login = async (req: Request, res: Response) => {
 
     if (!isMatch) {
       warn("Login failed: invalid password", { userId: user.id });
-      return res.status(400).json({ error: "Invalid credentials." });
+      return res.status(401).json({
+        error:
+          "INVALID CREDENTIALS\nPassword and email do not match, check email and password again.",
+      });
     }
 
     log("Generating JWT", { userId: user.id });
