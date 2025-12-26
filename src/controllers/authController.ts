@@ -130,3 +130,58 @@ export const login = async (req: Request, res: Response) => {
     return res.status(500).json({ error: "Failed to log in" });
   }
 };
+
+export const validateLoginToken = async (req: Request, res: Response) => {
+  log("Validate token request received");
+
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader) {
+    warn("⚠️ Token validation failed: missing Authorization header");
+    return res.status(401).json({
+      valid: false,
+      error: "AUTH_HEADER_MISSING",
+    });
+  }
+
+  const token = authHeader.split(" ")[1];
+
+  if (!token) {
+    warn("⚠️ Token validation failed: malformed Authorization header");
+    return res.status(401).json({
+      valid: false,
+      error: "TOKEN_MISSING",
+    });
+  }
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET) as { id: number };
+
+    log("JWT verified", { userId: decoded.id });
+
+    // Optional but recommended: check user still exists
+    const result = await pool.query("SELECT id FROM users WHERE id = $1", [
+      decoded.id,
+    ]);
+
+    if (result.rowCount === 0) {
+      warn("⚠️ Token valid but user not found", { userId: decoded.id });
+      return res.status(401).json({
+        valid: false,
+        error: "USER_NOT_FOUND",
+      });
+    }
+
+    return res.status(200).json({
+      valid: true,
+      userId: decoded.id,
+    });
+  } catch (err: any) {
+    warn("⚠️ Token validation failed", err?.message);
+
+    return res.status(401).json({
+      valid: false,
+      error: "TOKEN_INVALID_OR_EXPIRED",
+    });
+  }
+};
