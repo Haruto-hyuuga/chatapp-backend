@@ -1,6 +1,7 @@
 # chatapp-backend
 
-backend for chatapp, written in nodejs using typescript.
+backend for https://github.com/Haruto-hyuuga/chatapp
+written in nodejs using typescript.
 
 ### NPM pakages:
 
