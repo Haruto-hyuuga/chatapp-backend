@@ -7,8 +7,43 @@ This backend is designed with clean architecture, strong database constraints, a
 # Frontend application
 https://github.com/Haruto-hyuuga/chatapp
 
+
+# API Overview 
+| Method | Endpoint                              | Description                |
+|--------|---------------------------------------|----------------------------|
+| POST   | /auth/register                        | Register user              |
+| POST   | /auth/login                           | Login user                 |
+| GET    | /auth/validate                        | Validate JWT               |
+| GET    | /contacts                             | Fetch contacts             |
+| POST   | /contacts                             | Add contact                |
+| GET    | /contacts/recent                      | Fetch recent contacts      |
+| GET    | /conversations                        | Fetch conversations        |
+| POST   | /conversations/check-or-create        | Create conversation        |
+| GET    | /messages/:conversationId             | Fetch messages             |
+| POST   | /gemini                               | AI chat endpoint           |
+
+# Project Structure
+```
+src/
+├── controllers/    # Request handling logic
+├── routes/         # API route definitions
+├── middlewares/    # Authentication and validation middleware
+├── models/         # Database connection and setup
+├── services/       # External services (Gemini, Imgbb, etc.)
+├── utils/          # Logger and helpers
+└── types/          # Global TypeScript type extensions
+```
+
 # INSTALLATION & PAKAGES 
 ### pakages:
+- Node.js
+- Express
+- TypeScript
+- PostgreSQL
+- JWT (authentication)
+- bcrypt (password hashing)
+- Google Gemini AI
+- pg (PostgreSQL client)
 
 `npm install express bcrypt jsonwebtoken pg socket.io
 `
@@ -60,33 +95,8 @@ npm install --save-dev \
 
 ---
 
-# Tech Stack
-- Node.js
-- Express
-- TypeScript
-- PostgreSQL
-- JWT (authentication)
-- bcrypt (password hashing)
-- Google Gemini AI
-- pg (PostgreSQL client)
 
----
-
-# Project Structure
-```
-src/
-├── controllers/    # Request handling logic
-├── routes/         # API route definitions
-├── middlewares/    # Authentication and validation middleware
-├── models/         # Database connection and setup
-├── services/       # External services (Gemini, Imgbb, etc.)
-├── utils/          # Logger and helpers
-└── types/          # Global TypeScript type extensions
-```
-
----
-
-# Authentication Flow
+# All Endpoints Controller Working 
 ### Register
 - Hashes password using bcrypt
 - Assigns a random default profile picture
@@ -141,6 +151,8 @@ src/
 
 
 # Database (PostgreSQL)
+> for details read src/db/readme.md
+
 ### Tables
 - users
 - contacts
@@ -154,20 +166,8 @@ src/
 - Database-enforced integrity rules
 
 
-
-### Local Development
-
-1. Install PostgreSQL
-2. Create database: `chatapp_db`
-3. Apply database schema from src/db/readme
-4. Configure environment variables
-5. Start the backend server
-
-
-### Logging System
+# Logging System
 - log()   → Development only
 - warn()  → Development only
 - error() → Always logged (production-safe)
-
-
 
