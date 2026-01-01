@@ -79,6 +79,7 @@ npm install --save-dev \
   },
 ```
 
+> rest you should be able to figure out by docker commands
 ---
 
 # Features
@@ -151,7 +152,7 @@ npm install --save-dev \
 
 
 # Database (PostgreSQL)
-> for details read src/db/readme.md
+> for details read (src/models/db-readme.md)[https://github.com/Haruto-hyuuga/chatapp-backend/blob/main/src/models/db-readme.md]
 
 ### Tables
 - users
