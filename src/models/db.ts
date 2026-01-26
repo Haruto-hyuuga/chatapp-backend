@@ -7,10 +7,10 @@ const pool = new Pool({
   user: "postgres",
   password: process.env.DB_PASSWORD,
   ssl: { rejectUnauthorized: false },
-  family: 4   // fuck ipv4 fuck render fuck supabase 
 });
 
 export default pool;
+
 
 // const pool = new Pool({
 //   connectionString: process.env.DATABASE_URL,
