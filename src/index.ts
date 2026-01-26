@@ -9,6 +9,14 @@ import geminiRoutes from "./routes/geminiRoutes";
 import { saveMessage } from "./controllers/messagesController";
 import { log, error } from "./utils/logger";
 
+import dns from "dns";
+
+// FORCE IPv4 before anything else runs
+dns.setDefaultResultOrder("ipv4first");
+dns.lookup("db.uccqjtdyxhwqlcsvgmky.supabase.co", (err, address, family) => {
+  console.log("DB resolved to:", address, "IPv", family);
+});
+
 const app = express();
 const server = http.createServer(app);
 app.use(express.json());
