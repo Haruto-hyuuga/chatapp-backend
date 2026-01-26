@@ -72,6 +72,6 @@ server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
   console.log(`Server Mode: ${process.env.NODE_ENV}`);
   console.log("NODE_ENV:", process.env.NODE_ENV);
-  console.log("DATABASE_URL exists:", process.env.DATABASE_URL);
+  console.log("DATABASE_URL exists:", !!process.env.DATABASE_URL);
 
 });
