@@ -1,15 +1,8 @@
 import { Pool } from "pg";
-
-// const pool = new Pool({
-//   host: "db.uccqjtdyxhwqlcsvgmky.supabase.co",
-//   port: 5432,
-//   database: "postgres",
-//   user: "postgres",
-//   password: process.env.DB_PASSWORD,
-//   ssl: { rejectUnauthorized: false },
-// });
-
-
+//  ⚠️ Warning
+// Do not use `#` in the database password.
+// Using `#` fucks up PostgreSQL connection URLs and can cause connection errors.
+// Use only letters, numbers, `_` or `-` in the password.
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -18,8 +11,6 @@ const pool = new Pool({
       ? { rejectUnauthorized: false }
       : false,
 });
-
-
 
 // const pool = new Pool({
 //   user: "postgres",
